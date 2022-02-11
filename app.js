@@ -4,22 +4,19 @@ const getWeatherUpdate = (place) => {
   if (!place) {
     return console.log("Please provide location!");
   }
-  geocode(place, (error, geocodeResponse) => {
+  geocode(place, (error, { longitude, latitude, location } = {}) => {
+    // default parameter for object because if there comes an error then second argument will be undefined and we can't destructure undefined.
     if (error) {
       return console.log(error);
     }
-    forecast(
-      geocodeResponse.latitude,
-      geocodeResponse.longitude,
-      (error, forecastResponse) => {
-        if (error) {
-          return console.log(error);
-        }
-        console.log(
-          `The current temperature in ${geocodeResponse.location} is ${forecastResponse.temperature}°C, but it feels like ${forecastResponse.feelslike}°C.`
-        );
+    forecast(latitude, longitude, (error, { temperature, feelslike } = {}) => {
+      if (error) {
+        return console.log(error);
       }
-    );
+      console.log(
+        `The current temperature in ${location} is ${temperature}°C, but it feels like ${feelslike}°C.`
+      );
+    });
   });
 };
 
